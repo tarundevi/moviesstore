@@ -44,6 +44,8 @@
             <a class="btn btn-danger" href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">Delete
             </a>
             {% endif %}
+            <a class="btn btn-danger" href="{% url 'movies.report_review' id=template_data.movie.id review_id=review.id %}">Report
+            </a>
           </li>
           {% endfor %}
         </ul>
