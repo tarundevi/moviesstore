@@ -26,6 +26,9 @@
             </div>
           </form>
         </p>
+        {% if template_data.avg_rating %}
+        <p><b>Average Rating:</b> {{ template_data.avg_rating }} / 5 ⭐</p>
+        {% endif %}
         <h2>Reviews</h2>
         <hr />
         <ul class="list-group">
@@ -38,6 +41,7 @@
               {{ review.date }}
             </h6>
             <p class="card-text">{{ review.comment }}</p>
+            <p>{{ review.rating }}/5 ⭐</p>
             {% if user.is_authenticated and user == review.user %}
             <a class="btn btn-primary" href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">Edit
             </a>
@@ -59,6 +63,13 @@
                     </b><br /><br />
                   <form method="POST" action="{% url 'movies.create_review' id=template_data.movie.id %}">
                     {% csrf_token %}
+                    <p>
+                      <label><b>Rating:</b></label><br>
+                      {% for i in "12345" %}
+                      <input type="radio" name="rating" value="{{ forloop.counter }}" required>
+                      <label>{{ forloop.counter }}⭐</label>
+                      {% endfor %}
+                    </p>
                     <p>
                       <label for="comment">Comment:</label>
                       <textarea name="comment" required class="form-control" id="comment"></textarea>
