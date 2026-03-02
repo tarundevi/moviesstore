@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review, Report
+from .models import Movie, Review, Report, TopCommenter
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import Count
+from django.contrib.auth.models import User
 
 
 def index(request):
@@ -32,8 +33,10 @@ def create_review(request, id):
         review.movie = movie
         review.user = request.user
         review.save()
+        update_top_commenter()
         return redirect('movies.show', id=id)
     else:
+        update_top_commenter()
         return redirect('movies.show', id=id)
 @login_required
 def edit_review(request, id, review_id):
@@ -58,6 +61,7 @@ def delete_review(request, id, review_id):
     review = get_object_or_404(Review, id=review_id,
         user=request.user)
     review.delete()
+    update_top_commenter()
     return redirect('movies.show', id=id)
 @login_required
 def report_review(request, id, review_id):
@@ -68,3 +72,11 @@ def report_review(request, id, review_id):
     report.user = request.user
     report.save()
     return redirect('movies.show', id=id)
+def update_top_commenter():
+    TopCommenter.objects.all().delete()
+    top_user = User.objects.annotate(comment_count=Count('review')).order_by('-comment_count').first()
+    if top_user:
+        tc = TopCommenter()
+        tc.name = top_user.username
+        tc.comment_count = top_user.comment_count
+        tc.save()

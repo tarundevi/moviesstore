@@ -26,3 +26,6 @@ class Report(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+class TopCommenter(models.Model):
+    name = models.CharField(max_length=255)
+    comment_count = models.IntegerField(default=0)
