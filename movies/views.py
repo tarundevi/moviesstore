@@ -22,6 +22,7 @@ def show(request, id):
     template_data['title'] = movie.name
     template_data['movie'] = movie
     template_data['reviews'] = reviews
+    template_data['avg_rating'] = round(sum(r.rating for r in reviews) / len(reviews), 1) if reviews else None                                     
     return render(request, 'movies/show.html', {'template_data': template_data})
 @login_required
 def create_review(request, id):
@@ -29,6 +30,7 @@ def create_review(request, id):
         movie = Movie.objects.get(id=id)
         review = Review()
         review.comment = request.POST['comment']
+        review.rating = int(request.POST.get('rating', 5))
         review.movie = movie
         review.user = request.user
         review.save()
