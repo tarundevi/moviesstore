@@ -29,6 +29,60 @@
         {% else %}
         <p class="text-muted mt-3">No purchases have been made yet.</p>
         {% endif %}
+
+        <h4>Movie Stats</h4>
+
+
+        <h5 class="mt-3">Most Purchased Movie</h5>
+                {% if template_data.most_purchased %}
+        <table class="table table-bordered table-striped text-center mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Movie Name</th>
+              <th scope="col">Times Purchased</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in template_data.most_purchased %}
+            <tr{% if forloop.first %} class="table-success"{% endif %}>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ u.name}}</td>
+              <td>{{ u.total_purchased}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted mt-3">No purchases have been made yet.</p>
+        {% endif %}
+
+
+            <h5 class="mt-3">Most Reviewed Movie</h5>
+                {% if template_data.most_reviewed %}
+        <table class="table table-bordered table-striped text-center mt-3">
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Movie Name</th>
+              <th scope="col">Times Reviewed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in template_data.most_reviewed %}
+            <tr{% if forloop.first %} class="table-success"{% endif %}>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ u.name}}</td>
+              <td>{{ u.total_reviews}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted mt-3">No purchases have been made yet.</p>
+        {% endif %}
+        
+
       </div>
     </div>
   </div>
