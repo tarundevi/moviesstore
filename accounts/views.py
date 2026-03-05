@@ -8,6 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count 
 from cart.models import Item
 from movies.models import Movie, Review
+from .models import UserProfile
 
 @login_required
 def logout(request):
@@ -42,7 +43,9 @@ def signup(request):
     elif request.method == 'POST':
         form = CustomUserCreationForm(request.POST, error_class=CustomErrorList)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            region = form.cleaned_data.get('region')
+            UserProfile.objects.create(user=user, region=region)
             return redirect('accounts.login')
         else:
             template_data['form'] = form
@@ -88,5 +91,20 @@ def admin_dashboard(request):
         {'template_data': template_data})
 
 
+
+REGION_LIST =['Northeast', 'Southeast', 'Midwest', 'Southwest', 'West', 'International']
+              
+@login_required
+def popularity_map(request):
+    template_data = {}
+    template_data['title'] = 'Local Popularity Map'
+    template_data['regions'] = REGION_LIST
+    selected_region = request.GET.get('region', '')
+    template_data['selected_region'] = selected_region
+    template_data['region_movies'] = []
+    if selected_region:
+        users_in_region = UserProfile.objects.filter(region=selected_region).values_list('user', flat=True)
+        template_data['region_movies'] = Movie.objects.filter(item__order__user__in=users_in_region).annotate(total_purchased=Sum('item__quantity')).order_by('-total_purchased')[:5]
+    return render(request, 'accounts/map.html', {'template_data': template_data})
 
 

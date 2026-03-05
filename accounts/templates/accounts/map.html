@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-3 mt-4">
+  <div class="container">
+    <h2>Local Popularity Map</h2>
+    <p>Select a Region to see the most purchased movies in that area.</p>
+    <div class="row mb-4">
+        {% for region in template_data.regions %}
+        <div class="col-md-4 mb-3">
+            <a href="?region={{region}}" class = "text-decoration-none">
+                <div class="card text-center {% if template_data.selected_region == region %}border-success border-3{% endif %}">
+                    <div class = "card-body">
+                        <h5 class="card-title">{{region}}</h5>
+                        <p class = "card-text text-muted">Click the view all trending movies</p>
+                    </div>
+                </div> 
+            </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% if template_data.selected_region %}
+      <h4> Top Movies in {{template_data.selected_region}}</h4>
+      {% if template_data.region_movies %}
+      <table class = "table table-striped">
+        <tr>
+            <th>Rank</th>
+            <th>Movie</th>
+            <th>Times Purchased</th>
+        </tr>
+        <tbody>
+            {% for movie in template_data.region_movies %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{movie.name}}</td>
+                <td>{{movie.total_purchased}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No purchases found in {{template_data.selected_region}}</p>
+      {% endif %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
